@@ -1,4 +1,4 @@
-import { request, Request, Response } from "express";
+import { Request, Response } from "express";
 import { getRepository } from "typeorm";
 import CollectPoint from "../models/CollectPoint";
 import collectpoint_view from "../views/collectpoint_view";
@@ -7,9 +7,9 @@ import * as Yup from "yup";
 export default {
   async index(request: Request, response: Response) {
     const comedourosRepository = getRepository(CollectPoint);
-
     const comedouros = await comedourosRepository.find({
       relations: ["image"],
+      where: { validate: true },
     });
 
     return response.json(collectpoint_view.renderMany(comedouros));
@@ -26,7 +26,9 @@ export default {
     return response.json(collectpoint_view.render(comedouro));
   },
   async create(request: Request, response: Response) {
-    const { latitude, longitude } = request.body;
+    const { latitude, longitude, validate } = request.body;
+
+    console.log(typeof validate);
 
     const comedourosRepository = getRepository(CollectPoint);
 
@@ -40,6 +42,7 @@ export default {
       latitude,
       longitude,
       image,
+      validate: validate === "true",
     };
 
     const schema = Yup.object().shape({
@@ -48,6 +51,7 @@ export default {
       image: Yup.object().shape({
         path: Yup.string().required(),
       }),
+      validate: Yup.boolean().required(),
     });
 
     await schema.validate(data, {
