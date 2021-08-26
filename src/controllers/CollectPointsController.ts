@@ -8,8 +8,8 @@ export default {
   async index(request: Request, response: Response) {
     const comedourosRepository = getRepository(CollectPoint);
     const comedouros = await comedourosRepository.find({
-      relations: ["image"],
-      where: { validate: true },
+      relations: ["image"], where: { validate: true },
+     
     });
 
     return response.json(collectpoint_view.renderMany(comedouros));

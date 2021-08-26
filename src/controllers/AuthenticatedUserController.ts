@@ -33,8 +33,8 @@ export default {
         expiresIn,
       });
 
-      const user = { ...admin, password: undefined, token };
-      return response.json({ user });
+      const user = { ...admin, password: undefined };
+      return response.json({ user, token });
     } catch (err) {
       return response.json({ error: err.message });
     }
